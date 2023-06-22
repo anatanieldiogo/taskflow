@@ -166,7 +166,7 @@ body{
     width: 14px;
     height: 14px;
     border-radius: 3px;
-    background-color: rgb(255, 19, 98);
+    /* background-color: rgb(255, 19, 98); */
     margin-right: 11px;
 }
 /*ASIDE END*/
@@ -255,7 +255,7 @@ body{
     width: 14px;
     height: 14px;
     border-radius: 3px;
-    background-color: rgb(255, 19, 98);
+    /* background-color: rgb(255, 19, 98); */
 }
 /*TODO VIEW*/
 .todo-view{

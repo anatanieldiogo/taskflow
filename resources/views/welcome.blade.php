@@ -17,7 +17,7 @@
             <div class="section-todo-body">
 
                 <div class="section-todo-content">
-                    <div class="todo">
+                    {{-- <div class="todo">
                         <div class="todo-header">
                             <div class=""><input type="checkbox"> <span>Research content idea</span></div>
                             <i class="fas fa-chevron-right"></i>
@@ -260,7 +260,7 @@
                                 <span>Personal</span>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </section>

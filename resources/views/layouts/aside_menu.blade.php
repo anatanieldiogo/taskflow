@@ -32,7 +32,7 @@
             <nav class="aside-menu-menu">
                 <ul>
                     <div class="aside-menu-menu-lists">
-                        <li><a href="" class="click">
+                        {{-- <li><a href="" class="click">
                                 <div class="aside-list-color"></div> Personal <span>3</span>
                             </a></li>
                         <li><a href="" class="click">
@@ -40,7 +40,7 @@
                             </a></li>
                         <li><a href="" class="click">
                                 <div class="aside-list-color"></div> List1 <span>3</span>
-                            </a></li>
+                            </a></li> --}}
                     </div>
                     <li><a href="" class="click"><i class="fas fa-plus"></i> Add new list</a></li>
                 </ul>
