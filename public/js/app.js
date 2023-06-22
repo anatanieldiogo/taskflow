@@ -1,30 +1,3 @@
-
-// $('#store_list_form').on('submit', function (e) {
-//     e.preventDefault();
-    
-//     $.ajax({
-//         type: 'POST',
-//         url: '/create-list',
-//         headers: {
-//             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-//         },
-//         data: new FormData(this),
-//         dataType: "json",
-//         contentType: false,
-//         cache: false,
-//         processData: false,
-//         success: function (response) {
-//             $('.list-content-home').empty();
-//             getLists()
-            
-//             closeGuideWrapperPanels()
-//         },
-//         error: function(data){
-//             //console.log(data)
-//         }
-//     });
-// });
-
 $(window).on('load', function () {
     getTask()
     getList()
@@ -40,9 +13,9 @@ function getTask(){
         success: function (response) {
 
             $('.load-task').remove();
-            
+            //console.log(response.tasks)
             $.each(response.tasks, function (indexInArray, valueOfElement) { 
-                $('.section-todo-content').append(renderTask(valueOfElement))
+                $('.section-todo-content').prepend(renderTask(valueOfElement))
             });
         },
         beforeSend: function(){
@@ -54,7 +27,6 @@ function getTask(){
         }
     });
 }
-
 
 function renderTask(task){
     var render = `
@@ -68,12 +40,9 @@ function renderTask(task){
 
                 ${task.task_due_date != null ? `<div class="todo-due-date todo-body-child"><i class="fas fa-calendar-alt"></i><span>${task.task_due_date}</span></div>` : ``}
 
-                ${task.subtasks_count != 0 ? `<div class="todo-subtask todo-body-child"><p>${task.subtasks_count}</p><span>Subtasks</span></div>` : ``}
+                ${task.subtasks_count != 0 && task.subtasks_count != undefined ? `<div class="todo-subtask todo-body-child"><p>${task.subtasks_count}</p><span>Subtasks</span></div>` : ``}
 
-                    <div class="todo-list todo-body-child">
-                        <div class="todo-list-color" style="background-color:${task.list.list_color};"></div>
-                        <span>${task.list.list_name}</span>
-                    </div>
+                ${task.list != null ? `<div class="todo-list todo-body-child"><div class="todo-list-color" style="background-color:${task.list.list_color};"></div><span>${task.list.list_name}</span></div>` : ``}
                 </div>
             </div>
     `
@@ -118,6 +87,7 @@ function getList(){
         }
     });
 }
+
 function renderList(list){
     var render = `
         <li><a href="" class="click">
@@ -163,7 +133,9 @@ function viewTaskInfo(task_id){
             $('#task_description').val(response.task[0].task_description);
 
             $('#task_list option').prop('selected', false)
-            $('#task_list option[value="'+response.task[0].list.id+'"]').prop('selected', true)
+
+            /** NESSE MOMENTO O UNICO ERRO ESTA AQUI */
+            $('#task_list option[value="'+ response.task[0].list.id + '"]').prop('selected', true)
 
             //moment().format('YYYY-MM-DD')
             //$('#task_due_date').val(response.task[0].task_due_date);
@@ -171,21 +143,8 @@ function viewTaskInfo(task_id){
 
             $('.todo-view-body-subtasks-content').empty();
             $.each(response.task[0].subtasks, function (indexInArray, valueOfElement) { 
-                $('.todo-view-body-subtasks-content').append(renderSubtasks(valueOfElement))
+                $('.todo-view-body-subtasks-content').prepend(renderSubtasks(valueOfElement))
             });
-
-            //$("#task_list option").each(function(index, values){
-
-                // Number($(values).attr('value')) == response.task[0].list.id ? $(this).attr('selected', true) : $(values).attr('selected', false)
-
-                // if(Number($(v).attr('value')) === response.task[0].list.id){
-                    
-                //     $(this).attr('selected', true);
-                // }else{
-                //     $(this).attr('selected', false);
-                // }
-                
-            //});
         },
         beforeSend: function(){
             //$('.section-todo-content').html(renderLoadTask())
@@ -206,6 +165,84 @@ function renderSubtasks(subtask){
     `
     return render
 }
+
+/**STORE TASK */
+
+$('#create_task').keypress(function(event) {
+    if (event.which == 13) {
+        event.preventDefault();
+        if($(this).val() != ''){
+            storeTask($(this).val())
+        }else{
+            event.preventDefault();
+        }
+    }
+});
+
+function storeTask(task){
+    $.ajax({
+        type: 'POST',
+        url: "/store-task",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        data: { task_name: task },
+        success: function (response) {
+            //console.log(response.task)
+            $('#create_task').val('')
+            $('.section-todo-content').prepend(renderTask(response.task))
+
+        },
+        beforeSend: function(){
+            //
+        },
+        error: function(data){
+            alert('Detetamos um erro do sistema(Store task)')
+            console.log(data)
+        }
+    });
+}
+
+/**ADD SUBTASK */
+$('#task_subtask').keypress(function(event) {
+    if (event.which == 13) {
+        event.preventDefault();
+        if($(this).val() != ''){
+
+            const task_id = $('#task_id').val()
+            storeSubTask($(this).val(), task_id)
+            //alert(task_id)
+        }else{
+            event.preventDefault();
+        }
+    }
+});
+
+function storeSubTask(subTask, task_id){
+    $.ajax({
+        type: 'POST',
+        url: "/store-subtask",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        data: {
+            subtask_name: subTask,
+            subtask_task_id: task_id,
+        },
+        success: function (response) {
+            $('#task_subtask').val('')
+            $('.todo-view-body-subtasks-content').prepend(renderSubtasks(response.subtask))
+        },
+        beforeSend: function(){
+            //
+        },
+        error: function(data){
+            alert('Detetamos um erro do sistema(Store subtask)')
+            console.log(data)
+        }
+    });
+}
+/**ADD SUBTASK END*/
 
 $('#closeTask').click(function (e) { 
     e.preventDefault();

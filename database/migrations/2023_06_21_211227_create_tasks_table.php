@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('task_name');
-            $table->text('task_description');
-            $table->bigInteger('task_list_id')->unsigned();
+            $table->text('task_description')->nullable();
+            $table->bigInteger('task_list_id')->nullable()->unsigned();
             $table->foreign('task_list_id')->references('id')->on('lists')->onUpdate('cascade')->onDelete('cascade');
             $table->date('task_due_date')->nullable();
-            $table->boolean('task_status')->nullable();
+            $table->boolean('task_status')->default('0')->nullable();
             $table->timestamps();
         });
     }

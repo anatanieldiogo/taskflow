@@ -20,8 +20,22 @@ class TaskController extends Controller
 
     public function show($task_id)
     {
-        //sleep(3);
         $task = Task::query()->where('id', $task_id)->with('list', 'subtasks')->get();
+
+        return response()->json([
+            'task' => $task,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $attrs = $request->validate([
+            'task_name' => 'required|string',
+        ]);
+
+        $task = Task::query()->create([
+            'task_name' => $attrs['task_name']
+        ]);
 
         return response()->json([
             'task' => $task,

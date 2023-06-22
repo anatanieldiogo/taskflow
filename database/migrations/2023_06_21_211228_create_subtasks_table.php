@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('subtask_name');
             $table->bigInteger('subtask_task_id')->unsigned();
             $table->foreign('subtask_task_id')->references('id')->on('tasks')->onUpdate('cascade')->onDelete('cascade');
-            $table->boolean('subtask_status')->nullable();
+            $table->boolean('subtask_status')->default('0')->nullable();
             $table->timestamps();
         });
     }
