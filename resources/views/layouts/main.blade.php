@@ -23,6 +23,7 @@
 
         <script src="/js/app.js"></script>
         <script src="/js/scripts.js"></script>
+        <script src="/js/moment.js"></script>
         @stack('script')
     </body>
 </html>

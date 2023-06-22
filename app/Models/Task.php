@@ -19,7 +19,8 @@ class Task extends Model
 
     
     protected $casts = [
-        'task_due_date' => 'date:d M. y'
+        'task_due_date' => 'date:d M. y',
+        'date' => 'date:ddmmyy'
     ];
 
     

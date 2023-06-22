@@ -8,5 +8,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/get-all-todo', [TaskController::class, 'index']);
+Route::get('/get-all-task', [TaskController::class, 'index']);
 Route::get('/get-all-list', [ListsController::class, 'index']);
+Route::get('/get-task/{task_id}', [TaskController::class, 'show']);

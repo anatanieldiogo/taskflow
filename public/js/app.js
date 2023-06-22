@@ -26,14 +26,14 @@
 // });
 
 $(window).on('load', function () {
-    getTodo()
+    getTask()
     getList()
 });
 
-function getTodo(){
+function getTask(){
     $.ajax({
         type: 'GET',
-        url: "/get-all-todo",
+        url: "/get-all-task",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         },
@@ -49,29 +49,30 @@ function getTodo(){
             $('.section-todo-content').html(renderLoadTask())
         },
         error: function(data){
+            alert('Detetamos um erro do sistema(Task)')
             console.log(data)
         }
     });
 }
 
 
-function renderTask(todo){
+function renderTask(task){
     var render = `
-            <div class="todo" onclick="openTodo()">
+            <div class="todo" onclick="openTaskView(${task.id})">
                 <div class="todo-header">
-                    <div class=""><input type="checkbox"> <span>${todo.task_name}</span>
+                    <div class=""><input type="checkbox"> <span>${task.task_name}</span>
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </div>
                 <div class="todo-body">
 
-                ${todo.task_due_date != null ? `<div class="todo-due-date todo-body-child"><i class="fas fa-calendar-alt"></i><span>${todo.task_due_date}</span></div>` : ``}
+                ${task.task_due_date != null ? `<div class="todo-due-date todo-body-child"><i class="fas fa-calendar-alt"></i><span>${task.task_due_date}</span></div>` : ``}
 
-                ${todo.subtasks_count != 0 ? `<div class="todo-subtask todo-body-child"><p>${todo.subtasks_count}</p><span>Subtasks</span></div>` : ``}
+                ${task.subtasks_count != 0 ? `<div class="todo-subtask todo-body-child"><p>${task.subtasks_count}</p><span>Subtasks</span></div>` : ``}
 
                     <div class="todo-list todo-body-child">
-                        <div class="todo-list-color" style="background-color:${todo.list.list_color};"></div>
-                        <span>${todo.list.list_name}</span>
+                        <div class="todo-list-color" style="background-color:${task.list.list_color};"></div>
+                        <span>${task.list.list_name}</span>
                     </div>
                 </div>
             </div>
@@ -100,17 +101,19 @@ function getList(){
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         },
         success: function (response) {
-            console.log(response.lists)
+            //console.log(response.lists)
             $('.load-list').remove();
             
             $.each(response.lists, function (indexInArray, valueOfElement) { 
                 $('.aside-menu-menu-lists').append(renderList(valueOfElement))
+                $('#task_list').append(renderListFromTaskInfo(valueOfElement))
             });
         },
         beforeSend: function(){
             $('.aside-menu-menu-lists').html(renderLoadList())
         },
         error: function(data){
+            alert('Detetamos um erro do sistema(List)')
             console.log(data)
         }
     });
@@ -121,7 +124,13 @@ function renderList(list){
             <div class="aside-list-color" style="background-color:${list.list_color};"></div> ${list.list_name} <span>${list.tasks_count}</span>
         </a></li>
     `
- 
+    return render
+}
+
+function renderListFromTaskInfo(list){
+    var render = `
+    <option value="${list.id}">${list.list_name}</option>
+    `
     return render
 }
 
@@ -133,9 +142,69 @@ function renderLoadList(){
 }
 /**LIST END */
 
-function openTodo(){
+function openTaskView(task_id){
     $('.todo-view').css('display', 'flex');
     //$('.todo-view').toggle();
+
+    viewTaskInfo(task_id);
+}
+
+function viewTaskInfo(task_id){
+    $.ajax({
+        type: 'GET',
+        url: "/get-task/" + task_id,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        success: function (response) {
+
+            $('#task_id').val(response.task[0].id);
+            $('#task_name').val(response.task[0].task_name);
+            $('#task_description').val(response.task[0].task_description);
+
+            $('#task_list option').prop('selected', false)
+            $('#task_list option[value="'+response.task[0].list.id+'"]').prop('selected', true)
+
+            //moment().format('YYYY-MM-DD')
+            //$('#task_due_date').val(response.task[0].task_due_date);
+            $('#task_due_date_lbl').html(response.task[0].task_due_date == null ? 'Due date' : 'Due date - '+response.task[0].task_due_date);
+
+            $('.todo-view-body-subtasks-content').empty();
+            $.each(response.task[0].subtasks, function (indexInArray, valueOfElement) { 
+                $('.todo-view-body-subtasks-content').append(renderSubtasks(valueOfElement))
+            });
+
+            //$("#task_list option").each(function(index, values){
+
+                // Number($(values).attr('value')) == response.task[0].list.id ? $(this).attr('selected', true) : $(values).attr('selected', false)
+
+                // if(Number($(v).attr('value')) === response.task[0].list.id){
+                    
+                //     $(this).attr('selected', true);
+                // }else{
+                //     $(this).attr('selected', false);
+                // }
+                
+            //});
+        },
+        beforeSend: function(){
+            //$('.section-todo-content').html(renderLoadTask())
+        },
+        error: function(data){
+            alert('Detetamos um erro do sistema(Taskinfo)')
+            console.log(data)
+        }
+    });
+}
+
+function renderSubtasks(subtask){
+    var render = `
+        <div class="subtask">
+            <input type="checkbox" name="subtask[]" ${subtask.subtask_status == 1 ? `checked` : ``}>
+            <span ${subtask.subtask_status == 1 ? `style="text-decoration: line-through;"` : ``}>${subtask.subtask_name}</span>
+        </div>
+    `
+    return render
 }
 
 $('#closeTask').click(function (e) { 

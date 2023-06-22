@@ -9,7 +9,7 @@
                 <div class="aside-menu-header-form">
                     <form action="">
                         <i class="fas fa-search"></i>
-                        <input type="text" name="" id="" placeholder="Search">
+                        <input type="text" name="" placeholder="Search">
                     </form>
                 </div>
             </div>

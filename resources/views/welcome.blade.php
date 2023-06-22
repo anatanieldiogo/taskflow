@@ -10,7 +10,7 @@
                 <div class="aside-menu-header-form">
                     <form action="">
                         <i class="fas fa-plus"></i>
-                        <input type="text" name="" id="" placeholder="Add New Task">
+                        <input type="text" name="" placeholder="Add New Task">
                     </form>
                 </div>
             </div>
@@ -266,55 +266,55 @@
         </section>
         <aside class="todo-view">
             <form action="" id="task-form">
+                @csrf
+                <input type="hidden" name="task_id" id="task_id">
                 <div class="aside-menu-header">
                     <div class="aside-menu-header-label">
                         <h2>Task</h2>
-                        <button class="click" id="closeTask"><i class="fas fa-times"></i></button>
+                        <button type="button" class="click" id="closeTask"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
 
                 <div class="todo-view-body">
 
                     <div class="input-control">
-                        <input type="text" name="" id="" placeholder="Task">
+                        <input type="text" name="task_name" id="task_name" placeholder="Task">
                     </div>
                     <div class="input-control">
-                        <textarea name="" id="" cols="30" rows="6" placeholder="Description"></textarea>
+                        <textarea name="task_description" id="task_description" cols="30" rows="6" placeholder="Description"></textarea>
                     </div>
                     <div class="input-control input-control-columns">
                         <label for="">List</label>
-                        <select name="" id="">
-                            <option value="">Personal</option>
-                            <option value="">Work</option>
-                            <option value="">List1</option>
+                        <select name="task_list" id="task_list">
+                            {{-- Render list from js --}}
                         </select>
                     </div>
                     <div class="input-control input-control-columns">
-                        <label for="">Due date</label>
-                        <input type="date" name="" id="">
+                        <label for="" id="task_due_date_lbl">Due date</label>
+                        <input type="date" name="task_due_date" id="task_due_date">
                     </div>
 
                     <div class="input-control input-control-columns">
                         <label for="">Subtasks:</label>
                         <div class="input-control-icon">
                             <i class="fas fa-plus"></i>
-                            <input type="text" name="" id="" placeholder="Add New Subtask">
+                            <input type="text" name="task_subtask" id="task_subtask" placeholder="Add New Subtask">
                         </div>
                     </div>
 
                     <div class="todo-view-body-subtasks-content">
-                        <div class="subtask">
-                            <input type="checkbox">
+                        {{-- <div class="subtask">
+                            <input type="checkbox" name="subtask[]">
                             <span>Subtask name</span>
                         </div>
                         <div class="subtask">
-                            <input type="checkbox">
+                            <input type="checkbox" name="subtask[]">
                             <span>Subtask name</span>
                         </div>
                         <div class="subtask">
-                            <input type="checkbox">
+                            <input type="checkbox" name="subtask[]">
                             <span>Subtask name</span>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </form>
