@@ -13,6 +13,7 @@
         <link rel="stylesheet" type="text/css" href="/fontawesome/css/all.css">
         <link rel="stylesheet" type="text/css" href="/css/reset.css">
         <link rel="stylesheet" type="text/css" href="/css/fontes.css">
+        <link rel="stylesheet" type="text/css" href="/css/toast.css">
         @stack('style')
 
         <script src="/js/jQuery.js"></script>
@@ -23,6 +24,7 @@
 
         <script src="/js/app.js"></script>
         <script src="/js/scripts.js"></script>
+        <script src="/js/toast.js"></script>
         <script src="/js/moment.js"></script>
         @stack('script')
     </body>

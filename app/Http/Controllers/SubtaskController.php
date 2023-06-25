@@ -21,6 +21,23 @@ class SubtaskController extends Controller
 
         return response()->json([
             'subtask' => $subtask,
+            //'subtask' => $subtask->load('task'),
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $attrs = $request->validate([
+            'subtask_id' => 'required|integer',
+            'new_value' => 'required|integer|between:0,1',
+        ]);
+
+        $subtask = Subtask::query()->where('id', $attrs['subtask_id'])->update([
+            'subtask_status' => $attrs['new_value'],
+        ]);
+
+        return response()->json([
+            'change' => $subtask,
         ]);
     }
 }

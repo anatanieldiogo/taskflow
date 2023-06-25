@@ -22,7 +22,7 @@
             </div>
         </section>
         <aside class="todo-view">
-            <form action="" id="task-form">
+            <form action="#" id="task-form">
                 @csrf
                 <input type="hidden" name="task_id" id="task_id">
                 <div class="aside-menu-header">
@@ -60,25 +60,20 @@
                     </div>
 
                     <div class="todo-view-body-subtasks-content">
-                        {{-- <div class="subtask">
-                            <input type="checkbox" name="subtask[]">
-                            <span>Subtask name</span>
-                        </div>
-                        <div class="subtask">
-                            <input type="checkbox" name="subtask[]">
-                            <span>Subtask name</span>
-                        </div>
-                        <div class="subtask">
-                            <input type="checkbox" name="subtask[]">
-                            <span>Subtask name</span>
-                        </div> --}}
+                        {{-- SUBTASK HERE FROM JS --}}
                     </div>
                 </div>
             </form>
 
             <div class="task-form-option">
-                <button class="click">Delete task</button>
-                <button class="click">Save changes</button>
+                <div class="btn-delete-confirm">
+                    <button class="click" id="delete-checked">Delete task</button>
+                    <div class="btn-delete-confirm-hidden">
+                        <button class="click" id="cansel-delete-task"><i class="fas fa-times"></i></button>
+                        <button class="click" id="delete-task"><i class="fas fa-check"></i></button>
+                    </div>
+                </div>
+                <button class="click" id="update-task">Save changes</button>
             </div>
         </aside>
     </main>

@@ -203,6 +203,7 @@ body{
     height: calc(100vh - 140px);
     overflow: auto;
     border-radius: 6px 6px 0 0;
+    scroll-behavior: smooth;
 }
 .todo{
     padding: 15px;
@@ -319,6 +320,7 @@ body{
     margin-top: 15px;
     max-height: 150px;
     overflow: auto;
+    scroll-behavior: smooth;
 }
 .subtask{
     padding: 7px 0;
@@ -347,12 +349,39 @@ body{
     background-color: transparent;
     font-weight: 700;
 }
-.task-form-option button:first-child{
+.task-form-option .btn-delete-confirm button{
     background-color: rgba(255, 19, 98, 0.123);
     border-color: rgb(255, 19, 98);
     color: rgb(255, 19, 98);
 }
+#delete-task{
+    background-color: rgba(255, 19, 98, 0.123)!important;
+    border-color: rgb(255, 19, 98)!important;
+    color: rgb(255, 19, 98)!important;
+}
 .task-form-option button:last-child{
     background-color: var(--yellow-color);
+    color: #1d1c1c;
+}
+.btn-delete-confirm{
+    height: 42px;
+    overflow: hidden;
+}
+#delete-checked{
+    transition: .3s ease;
+}
+.btn-delete-confirm-hidden{
+    margin-top: 5px;
+    transition: .3s ease;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.btn-delete-confirm-hidden button{
+    flex: 1;
+}
+.btn-delete-confirm-hidden button:first-child{
+    background-color: transparent;
+    border-color: #1d1c1c;
     color: #1d1c1c;
 }

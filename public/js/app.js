@@ -30,7 +30,7 @@ function getTask(){
 
 function renderTask(task){
     var render = `
-            <div class="todo" onclick="openTaskView(${task.id})">
+            <div class="todo" data-task-id="${task.id}" onclick="openTaskView(${task.id})">
                 <div class="todo-header">
                     <div class=""><input type="checkbox"> <span>${task.task_name}</span>
                     </div>
@@ -38,7 +38,7 @@ function renderTask(task){
                 </div>
                 <div class="todo-body">
 
-                ${task.task_due_date != null ? `<div class="todo-due-date todo-body-child"><i class="fas fa-calendar-alt"></i><span>${task.task_due_date}</span></div>` : ``}
+                ${task.task_due_date != null ? `<div class="todo-due-date todo-body-child"><i class="fas fa-calendar-alt"></i><span>${moment(task.task_due_date).format("DD [de] MMM YYYY")}</span></div>` : ``}
 
                 ${task.subtasks_count != 0 && task.subtasks_count != undefined ? `<div class="todo-subtask todo-body-child"><p>${task.subtasks_count}</p><span>Subtasks</span></div>` : ``}
 
@@ -115,7 +115,7 @@ function renderLoadList(){
 function openTaskView(task_id){
     $('.todo-view').css('display', 'flex');
     //$('.todo-view').toggle();
-
+    $('#cansel-delete-task').click()
     viewTaskInfo(task_id);
 }
 
@@ -134,12 +134,11 @@ function viewTaskInfo(task_id){
 
             $('#task_list option').prop('selected', false)
 
-            /** NESSE MOMENTO O UNICO ERRO ESTA AQUI */
-            $('#task_list option[value="'+ response.task[0].list.id + '"]').prop('selected', true)
+            $('#task_list option[value="'+ (response.task[0].list != null ? response.task[0].list.id : 1) + '"]').prop('selected', true)
 
             //moment().format('YYYY-MM-DD')
-            //$('#task_due_date').val(response.task[0].task_due_date);
-            $('#task_due_date_lbl').html(response.task[0].task_due_date == null ? 'Due date' : 'Due date - '+response.task[0].task_due_date);
+            $('#task_due_date').val(response.task[0].task_due_date);
+            $('#task_due_date_lbl').html(response.task[0].task_due_date == null ? 'Due date' : 'Due date - '+moment(response.task[0].task_due_date).format("DD [de] MMM YYYY"));
 
             $('.todo-view-body-subtasks-content').empty();
             $.each(response.task[0].subtasks, function (indexInArray, valueOfElement) { 
@@ -159,7 +158,7 @@ function viewTaskInfo(task_id){
 function renderSubtasks(subtask){
     var render = `
         <div class="subtask">
-            <input type="checkbox" name="subtask[]" ${subtask.subtask_status == 1 ? `checked` : ``}>
+            <input type="checkbox" name="subtask[]" data-id="${subtask.id}" class="subtask-check" ${subtask.subtask_status == 1 ? `checked` : ``}>
             <span ${subtask.subtask_status == 1 ? `style="text-decoration: line-through;"` : ``}>${subtask.subtask_name}</span>
         </div>
     `
@@ -169,7 +168,7 @@ function renderSubtasks(subtask){
 /**STORE TASK */
 
 $('#create_task').keypress(function(event) {
-    if (event.which == 13) {
+    if (event.which == 13) {//Enter
         event.preventDefault();
         if($(this).val() != ''){
             storeTask($(this).val())
@@ -232,6 +231,10 @@ function storeSubTask(subTask, task_id){
         success: function (response) {
             $('#task_subtask').val('')
             $('.todo-view-body-subtasks-content').prepend(renderSubtasks(response.subtask))
+
+            /**SO PRA ATUALIZAR A SUBTASK NA LISTAS DAS TASKS */
+            //getTask()
+            //console.log(response.subtask)
         },
         beforeSend: function(){
             //
@@ -249,3 +252,120 @@ $('#closeTask').click(function (e) {
     $('.todo-view').css('display', 'none');
 });
 
+/** CHANGE SUBTASK STATUS */
+
+$(document).on("change", "input[name='subtask[]']", function () {
+
+    const subTaskId = $(this).attr('data-id')
+
+    if(this.checked) {
+
+        $(this).prop( "checked", true );
+        $(this).next().css("text-decoration", "line-through");
+        changeSubtaskStatus(subTaskId, 1)
+
+        Toast.show('Subtask concluída')
+        
+    }else{
+
+        $(this).prop( "checked", false );
+        $(this).next().css("text-decoration", "none");
+        changeSubtaskStatus(subTaskId, 0)
+
+        Toast.show('Subtask por concluir')
+    }    
+
+});
+
+function changeSubtaskStatus(subTaskId, newValue){
+    $.ajax({
+        type: 'POST',
+        url: "/change-subtask-status",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        data: {
+            subtask_id: subTaskId,
+            new_value: newValue
+        },
+        success: function (response) {
+            //console.log(response.change)
+        },
+        beforeSend: function(){
+            //
+        },
+        error: function(data){
+            alert('Detetamos um erro do sistema(Change subtask)')
+            console.log(data)
+        }
+    });
+}
+
+/** DELETE TASK */
+
+$('#delete-checked').click(function (e) { 
+    e.preventDefault();
+    $('.btn-delete-confirm-hidden').css('transform', 'translateY(-47px)');
+    $('#delete-checked').css('transform', 'translateY(-47px)');
+});
+
+$('#cansel-delete-task').click(function (e) { 
+    e.preventDefault();
+    $('.btn-delete-confirm-hidden').css('transform', '');
+    $('#delete-checked').css('transform', '');
+});
+
+$('#delete-task').click(function (e) { 
+    e.preventDefault();
+
+    const taskId = $('#task_id').val()
+    
+    $.ajax({
+        type: "GET",
+        url: "/delete-task/"+ taskId,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        dataType: 'json',
+        success: function (response) {
+            //console.log(response.task)
+            Toast.show('Task excluída')
+            $('.todo-view').css('display', 'none');
+            $('#cansel-delete-task').click()
+
+            $('.todo[data-task-id="'+taskId+'"]').remove();
+        },
+        error: function (response) {
+            
+        }
+    });
+
+});
+
+/** UPDATE TASK */
+
+$('#update-task').click(function (e) { 
+    e.preventDefault();
+    
+    const taskId = $('#task_id').val()
+
+    $.ajax({
+        type: "POST",
+        url: "/task-update",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        data: new FormData($('#task-form')[0]),
+        dataType: 'json',
+        contentType: false,
+        cache: false,
+        processData: false,
+        success: function (response) {
+            //console.log(response.task)
+            $('.todo[data-task-id="'+taskId+'"]').replaceWith(renderTask(response.task[0]));
+        },
+        error: function (response) {
+            
+        }
+    });
+});
