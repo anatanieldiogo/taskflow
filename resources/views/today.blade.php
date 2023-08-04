@@ -1,22 +1,23 @@
 @extends('layouts.main')
 
-@section('title', 'Taskflow')
+@section('title', 'Taskflow - Today')
 @section('content')
     @include('layouts.aside_menu', [
-        'active' => 'all',
-        'total_task_today' => '',
+        'active' => 'today',
+        'total_task_today' => count($tasks),
     ])
     <main class="main-container">
         <section class="section-todo">
             <div class="section-todo-header">
                 <div class="section-todo-header-left">
                     <button aria-label="Open menu" class="click center" id="open-aside"><i class="fas fa-bars"></i></button>
-                    <h1>All</h1>
+                    <h1>Today</h1>
                 </div>
                 <div class="aside-menu-header-form">
                     <form action="">
                         <i class="fas fa-plus"></i>
-                        <input type="text" name="new_task" id="create_task" placeholder="Add New Task">
+                        <input type="text" name="new_task" id="create_task" data-list=""
+                            placeholder="Add new task to Today">
                     </form>
                 </div>
             </div>
@@ -24,6 +25,7 @@
 
                 <div class="section-todo-content">
                     {{-- TASKS --}}
+
                     @forelse($tasks as $task)
                         <div class="todo" data-task-id="{{ $task->id }}">
                             <input type="checkbox" aria-label="check task" name="task[]" data-id="{{ $task->id }}"
@@ -61,6 +63,7 @@
                         </div>
 
                     @empty
+
                         <div class="empty">
                             <i class="fas fa-eye-slash"></i>
                             <h2>No tasks at moment, create one👆🏽</h2>
@@ -133,7 +136,3 @@
         </aside>
     </main>
 @endsection
-
-@push('scripts')
-    <script src="/js/tasks.js"></script>
-@endpush

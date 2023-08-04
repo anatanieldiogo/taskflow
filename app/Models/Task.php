@@ -17,14 +17,11 @@ class Task extends Model
         'task_due_date',
     ];
 
-    
     // protected $casts = [
     //     'task_due_date' => 'date:d M. y',
     //     'date' => 'date:ddmmyy'
     // ];
-
     
-
     public function list()
     {
         return $this->belongsTo(Lists::class, 'task_list_id');
