@@ -2,7 +2,7 @@
     <div class="aside-menu-separate">
         <div class="aside-menu-header">
             <div class="aside-menu-header-label">
-                <img src="{{ asset('img/taskflow.svg') }}" alt="">
+                <img src="{{ asset('img/taskflow.svg') }}" alt="taskflow logo">
             </div>
             <div class="aside-menu-header-form">
                 <form action="">
@@ -26,13 +26,13 @@
                 <li><a href="{{ route('all-tasks') }}" class="{{ $active == 'all' ? 'aside-menu-acive' : '' }} click"><i
                             class="fas fa-tasks"></i> All
                         <span id="all-task"></span></a></li>
-                <li><a href="{{ route('calendar') }}"
+                {{-- <li><a href="{{ route('calendar') }}"
                         class="{{ $active == 'calendar' ? 'aside-menu-acive' : '' }} click"><i
                             class="fas fa-calendar-alt"></i> Calendar</a>
                 </li>
                 <li><a href="{{ route('sticky') }}" class="{{ $active == 'sticky' ? 'aside-menu-acive' : '' }} click"><i
                             class="fas fa-sticky-note"></i> Sticky wall</a>
-                </li>
+                </li> --}}
             </ul>
         </nav>
         <div class="aside-menu-title">
@@ -79,8 +79,8 @@
     </div>
     <nav class="aside-menu-menu">
         <ul>
-            <li><a href="{{ route('settings') }}" class="click"><i class="fas fa-sliders-h"></i> Settings</a></li>
-            <li><a href="{{ route('logout') }}" class="click"><i class="fas fa-sign-out-alt"></i> Sign out</a></li>
+            {{-- <li><a href="{{ route('settings') }}" class="click"><i class="fas fa-sliders-h"></i> Settings</a></li>
+            <li><a href="{{ route('logout') }}" class="click"><i class="fas fa-sign-out-alt"></i> Sign out</a></li> --}}
         </ul>
     </nav>
 </aside>

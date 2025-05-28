@@ -10,15 +10,10 @@ class TaskController extends Controller
 {
     public function index()
     {
-        //sleep(3);
         Carbon::setLocale('pt');
         $tasks = Task::query()->with('list')->withCount('subtasks')->orderBy('id', 'desc')->get();
 
         return view('welcome', compact('tasks'));
-
-        // return response()->json([
-        //     'tasks' => $tasks,
-        // ]);
     }
 
     public function show($task_id)
@@ -27,15 +22,15 @@ class TaskController extends Controller
 
         return response()->json([
             'task' => $task,
-        ]);
+        ], 200);
     }
 
     public function search($search)
     {
         $task = Task::query()->where('task_name', 'like', '%' . $search . '%')
-        ->with('list', 'subtasks')->orWhereHas('list', function ($query) use ($search) {
-            $query->where('list_name', 'like', '%'.$search.'%');
-        })->get();
+            ->with('list', 'subtasks')->orWhereHas('list', function ($query) use ($search) {
+                $query->where('list_name', 'like', '%' . $search . '%');
+            })->get();
 
         return response()->json([
             'task' => $task,
@@ -56,12 +51,11 @@ class TaskController extends Controller
 
         return response()->json([
             'task' => $task,
-        ]);
+        ], 200);
     }
 
     public function update(Request $request)
     {
-
         $attrs = $request->validate([
             'task_id' => 'required|integer',
             'task_name' => 'required|string',
@@ -85,7 +79,7 @@ class TaskController extends Controller
 
         return response()->json([
             'task' => $task,
-        ]);
+        ], 200);
     }
 
     public function markTaskAsDone(Request $request)
@@ -114,11 +108,10 @@ class TaskController extends Controller
 
     public function destroy($task_id)
     {
-
-        $task = Task::query()->where('id', $task_id)->delete();
+        $task = Task::query()->findOrFail($task_id)->delete();
 
         return response()->json([
             'task' => $task,
-        ]);
+        ], 200);
     }
 }
